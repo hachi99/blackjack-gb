@@ -3,8 +3,9 @@ let playerHand = [];
 let dealerHand = [];
 let gameOver = true;
 let dealerHidden = true;
-let wins = localStorage.getItem("wins") || 0;
-let losses = localStorage.getItem("losses") || 0;
+let wins = parseInt(localStorage.getItem("wins")) || 0;
+let losses = parseInt(localStorage.getItem("losses")) || 0;
+let pushes = parseInt(localStorage.getItem("pushes")) || 0;
 
 const dealerCardsEl = document.getElementById("dealer-cards");
 const playerCardsEl = document.getElementById("player-cards");
@@ -19,12 +20,17 @@ document.getElementById("hit").addEventListener("click", hit);
 document.getElementById("stand").addEventListener("click", stand);
 
 function updateStats() {
-  statsEl.textContent = `Wins: ${wins} | Losses: ${losses}`;
+  statsEl.textContent = `Wins: ${wins} | Losses: ${losses} | Push: ${pushes}`;
+  statsEl.style.marginTop = "10px";
+  statsEl.style.fontWeight = "bold";
 }
+
+/* ================= DECK ================= */
 
 function createDeck() {
   const suits = ["♠", "♥", "♦", "♣"];
   const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+
   deck = [];
 
   for (let suit of suits) {
@@ -47,13 +53,16 @@ function dealCard(hand) {
   hand.push(deck.pop());
 }
 
+/* ================= SCORE ================= */
+
 function calculateScore(hand) {
   let score = 0;
   let aces = 0;
 
   for (let card of hand) {
-    if (["J", "Q", "K"].includes(card.value)) score += 10;
-    else if (card.value === "A") {
+    if (["J", "Q", "K"].includes(card.value)) {
+      score += 10;
+    } else if (card.value === "A") {
       score += 11;
       aces++;
     } else {
@@ -69,6 +78,36 @@ function calculateScore(hand) {
   return score;
 }
 
+
+function isBlackjack(hand) {
+  if (hand.length !== 2) return false;
+
+  const values = hand.map(card => card.value);
+
+  const hasAce = values.includes("A");
+  const hasTenCard = values.some(v =>
+    ["10", "J", "Q", "K"].includes(v)
+  );
+
+  return hasAce && hasTenCard;
+}
+
+
+function checkInitialBlackjack() {
+  const playerBJ = isBlackjack(playerHand);
+  const dealerBJ = isBlackjack(dealerHand);
+
+  if (playerBJ || dealerBJ) {
+    setTimeout(() => {
+      dealerHidden = false;
+      render();
+      finishGame();
+    }, 500);
+  }
+}
+
+/* ================= UI ================= */
+
 function disableButtons() {
   document.getElementById("hit").disabled = true;
   document.getElementById("stand").disabled = true;
@@ -79,13 +118,13 @@ function render() {
   if (dealerHidden) {
     dealerCardsEl.textContent =
       dealerHand[0].value + " ?";
-    
+
     dealerScoreEl.textContent =
       "Score: " + calculateScore([dealerHand[0]]);
   } else {
     dealerCardsEl.textContent =
       dealerHand.map(c => c.value).join(" ");
-    
+
     dealerScoreEl.textContent =
       "Score: " + calculateScore(dealerHand);
   }
@@ -97,17 +136,17 @@ function render() {
     "Score: " + calculateScore(playerHand);
 }
 
+/* ================= GAME LOGIC ================= */
+
 function dealerPlay() {
   if (calculateScore(dealerHand) < 17) {
     dealCard(dealerHand);
     render();
-
     setTimeout(dealerPlay, 400);
   } else {
     finishGame();
   }
 }
-
 
 function startGame() {
   createDeck();
@@ -128,13 +167,7 @@ function startGame() {
 
   render();
 
-  const playerBJ = isBlackjack(playerHand);
-  const dealerBJ = isBlackjack(dealerHand);
-
-  if (playerBJ || dealerBJ) {
-    dealerHidden = false;
-    finishGame();
-  }
+  checkInitialBlackjack();
 }
 
 function hit() {
@@ -144,22 +177,28 @@ function hit() {
   render();
 
   if (calculateScore(playerHand) > 21) {
-    dealerHidden = false;
-    resultEl.textContent = "BUST! Dealer wins.";
-    gameOver = true;
-    render();
-  }
-}
+  dealerHidden = false;
+  resultEl.textContent = "BUST! Dealer wins.";
 
+  losses++;
+  localStorage.setItem("losses", losses);
+
+  gameOver = true;
+  disableButtons();
+  updateStats();
+  render();
+}
+}
 
 function stand() {
   if (gameOver) return;
 
   dealerHidden = false;
   dealerPlay();
-
   disableButtons();
 }
+
+/* ================= FINAL RESULT ================= */
 
 function finishGame() {
 
@@ -177,14 +216,31 @@ function finishGame() {
     losses++;
     localStorage.setItem("losses", losses);
   } else {
-    resultEl.textContent = "PUSH!";
-  }
+  resultEl.textContent = "PUSH!";
+  pushes++;
+  localStorage.setItem("pushes", pushes);
+}
 
   updateStats();
   gameOver = true;
   disableButtons();
   render();
 }
+
+/* ================= RESET STATS ================= */
+document.getElementById("reset-stats").addEventListener("click", () => {
+  wins = 0;
+  losses = 0;
+  pushes = 0;
+
+  localStorage.setItem("wins", 0);
+  localStorage.setItem("losses", 0);
+  localStorage.setItem("pushes", 0);
+
+  updateStats();
+});
+
+/* ================= SERVICE WORKER ================= */
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -193,3 +249,5 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.log("SW error:", err));
   });
 }
+
+updateStats();
