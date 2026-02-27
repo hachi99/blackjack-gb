@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackjack GB</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f380f">
+  <link rel="icon" type="image/x-icon" sizes="192x192" href="./assets/icon-192.ico">
+  <link rel="icon" type="image/x-icon" sizes="512x512" href="./assets/icon-512.ico">
+</head>
+<body>
+  <div class="screen">
+
+    <h1>BLACKJACK</h1>
+
+    <div class="section">
+      <p>DEALER</p>
+      <div id="dealer-cards" class="cards"></div>
+      <p id="dealer-score"></p>
+    </div>
+
+    <div class="section">
+      <p>PLAYER</p>
+      <div id="player-cards" class="cards"></div>
+      <p id="player-score"></p>
+    </div>
+
+    <div class="controls">
+      <button id="start">START</button>
+      <button id="hit">HIT</button>
+      <button id="stand">STAND</button>
+    </div>
+
+    <p id="result"></p>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
