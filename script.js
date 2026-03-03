@@ -130,7 +130,7 @@ function disableButtons() {
 function render() {
   if (dealerHidden) {
     dealerCardsEl.textContent =
-      dealerHand[0].value + " ?";
+      dealerHand[0].value + dealerHand[0].suit +" ?";
 
     dealerScoreEl.textContent =
       "Score: " + calculateScore([dealerHand[0]]);
