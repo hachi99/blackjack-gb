@@ -5,7 +5,8 @@ const FILES_TO_CACHE = [
   "./index.html",
   "./style.css",
   "./script.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./assets/fonts/ChicagoFLF.woff"
 ];
 
 self.addEventListener("install", (event) => {

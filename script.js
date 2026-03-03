@@ -14,7 +14,20 @@ const playerScoreEl = document.getElementById("player-score");
 const resultEl = document.getElementById("result");
 const statsEl = document.createElement("p");
 
-document.querySelector(".screen").appendChild(statsEl);
+document.addEventListener("DOMContentLoaded", () => {
+
+  const statsContainer = document.querySelector(".stats-container");
+
+  statsEl.classList.add("stats");
+
+  if (statsContainer) {
+    statsContainer.appendChild(statsEl);
+  }
+
+  updateStats();
+
+});
+
 document.getElementById("start").addEventListener("click", startGame);
 document.getElementById("hit").addEventListener("click", hit);
 document.getElementById("stand").addEventListener("click", stand);
@@ -123,14 +136,14 @@ function render() {
       "Score: " + calculateScore([dealerHand[0]]);
   } else {
     dealerCardsEl.textContent =
-      dealerHand.map(c => c.value).join(" ");
+      dealerHand.map(c => c.value + c.suit).join(" ");
 
     dealerScoreEl.textContent =
       "Score: " + calculateScore(dealerHand);
   }
 
   playerCardsEl.textContent =
-    playerHand.map(c => c.value).join(" ");
+    playerHand.map(c => c.value + c.suit).join(" ");
 
   playerScoreEl.textContent =
     "Score: " + calculateScore(playerHand);
@@ -249,5 +262,3 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.log("SW error:", err));
   });
 }
-
-updateStats();
