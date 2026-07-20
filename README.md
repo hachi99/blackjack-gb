@@ -18,10 +18,29 @@ This was made so I can play blackjack on my phone without downloading any apps w
 
 ## Screenshots
 
-![Home Screen](screenshots/2.png)
-![Winner](screenshots/1.png)
-![Stats](screenshots/3.png)
-![Mobile PWA](screenshots/mobile.jpg)
+<h3>Desktop</h3>
+
+<p align="center">
+  <strong>Home Screen</strong><br>
+  <img src="screenshots/2.png" alt="Home Screen" width="800">
+</p>
+
+<p align="center">
+  <strong>Winner Screen</strong><br>
+  <img src="screenshots/1.png" alt="Winner Screen" width="800">
+</p>
+
+<p align="center">
+  <strong>Statistics</strong><br>
+  <img src="screenshots/3.png" alt="Statistics" width="800">
+</p>
+
+<h3>Mobile PWA</h3>
+
+<p align="center">
+  <strong>Installable Progressive Web App</strong><br>
+  <img src="screenshots/mobile.jpg" alt="Mobile PWA" width="350">
+</p>
 
 ## Live Demo
 
